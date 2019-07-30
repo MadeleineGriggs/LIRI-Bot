@@ -17,8 +17,13 @@ You can user LIRI with the following commands:
 
 ## Usage
 1. `node liri.js concert-this <artist/band name>`
-  * Without an artist or band name the search will default to the song "the Sign".
+  ![concert-this default image](concertThis.gif)
+
 
 2.  `node liri.js movie-this <movie name>`
   * Without a movie name the search will default to the movie "Mr. Nobody".
         ![movie-this default image](movieThis.gif)
+
+3.  `node liri.js spotify-this-song <song name>`
+  * Without a song name the search will default to the song "the Sign".
+        ![movie-this default image](spotifyThis.gif)
