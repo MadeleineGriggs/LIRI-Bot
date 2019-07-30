@@ -21,3 +21,4 @@ You can user LIRI with the following commands:
 
 2.  `node liri.js movie-this <movie name>`
   * Without a movie name the search will default to the movie "Mr. Nobody".
+        ![movie-this default image](movieThis.gif)
