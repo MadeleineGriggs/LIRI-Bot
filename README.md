@@ -17,6 +17,7 @@ You can user LIRI with the following commands:
 
 ## Usage
 1. `node liri.js concert-this <artist/band name>`
+  * Without an artist name you will not be able to perform a search.
   ![concert-this default image](concertThis.gif)
 
 
@@ -27,3 +28,7 @@ You can user LIRI with the following commands:
 3.  `node liri.js spotify-this-song <song name>`
   * Without a song name the search will default to the song "the Sign".
         ![movie-this default image](spotifyThis.gif)
+
+4.  `node liri.js do-what-it-says`
+  * reads a search command from a text file called random.txt and runs it.
+        ![movie-this default image](doWhatItSays.gif)
