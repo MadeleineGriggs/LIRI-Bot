@@ -2,20 +2,94 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var Spotify = require('node-spotify-api');
 var axios = require("axios");
-
+var moment = require("moment");
+var fs = require("fs");
 var spotify = new Spotify(keys.spotify);
 
-if (process.argv[2] === "movie-this"){
 
-    var userQuery = "Mr. Nobody";
-    var nodeArg = process.argv;
-    console.log("process argv at 3: " + process.argv[3]);
-    if (process.argv[3] !== "undefined") {
-        for ( i = 3 ; i < nodeArg.length ; i++ ) {
-            userQuery += (nodeArg[i] + " ");
-        };
+function liriSearch() {
+    var choice = process.argv[2];
+    switch (choice) {
+        case "do-what-it-says":
+            doWhatitSays();
+            break;
+        case "spotify-this-song":
+            var userInput = process.argv.slice(3).join(" ");
+            spotifyThis(userInput);
+            break;
+        case "movie-this":
+                var userInput = process.argv.slice(3).join(" ");
+            movieThis(userInput);
+            break;
+        case "concert-this":
+                var userInput = process.argv.slice(3).join("");
+                concertThis(userInput);
+            break;
+        default:
+            console.log("\nSomething went wrong. please check your input and try again. \n")
+            console.log(`-------------------------------------------------------------------`);
+            console.log(
+                `First type "node liri.js" followed by any of these commands: 
+            \n concert-this "the name of an artist who is touring"
+            \n spotify-this-song "any song title"
+            \n movie-this "any movie title"
+            \n "do-what-it-says"`);
+            console.log(`-------------------------------------------------------------------`);
     }
+}
 
+function doWhatitSays() {
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        console.log(data);
+        var dataArr = data.split(",");
+        var userCommand = dataArr[0];
+        var userQuery = dataArr[1];
+        if (userCommand === "spotify-this-song") {
+            spotifyThis(userQuery);
+        } else if (userCommand === "movie-this") {
+            movieThis(userQuery);
+        } else if (userCommand === "concert-this") {
+            concertThis(userQuery);
+        } else {
+            console.log("Unable to process the random.txt file to get a command.")
+        }
+    })
+}
+
+function concertThis(userInput) {
+    var userQuery = userInput;
+    console.log(userQuery);
+
+        axios.get("https://rest.bandsintown.com/artists/" + userQuery + "/events?app_id=codingbootcamp").then(
+    function(response) {
+        console.log("--------------------------------")
+        console.log("BANDS IN TOWN DATA");
+        console.log("-------------------------------- \n")
+        for (var i = 0; i < response.data.length; i++) {
+            console.log("Venue: " + response.data[i].venue.name);
+            console.log("City: " + response.data[i].venue.city + ", " + response.data[i].venue.country);
+            console.log("Date of Concert: " + moment(response.data[i].datetime).format("L"));
+            console.log("\n")
+        }
+        })
+        .catch(function(error) {
+        console.log("There is an error for the concert this function.")
+        console.log(error);
+    });
+}
+
+
+
+// The function for the "movie-this" part of the liribot.
+function movieThis(userInput) {
+    if (userInput === "") {
+        userQuery = "Mr. Nobody";
+    } else{  
+        var userQuery = userInput;
+    }
 
     axios.get("http://www.omdbapi.com/?t="+ userQuery +"&y=&plot=short&apikey=f8b737f3").then(
     function(response) {
@@ -35,12 +109,15 @@ if (process.argv[2] === "movie-this"){
     });
 }
 
-if (process.argv[2] === "spotify-this-song") {
-    var userQuery = "";
-    var nodeArg = process.argv;
-    for ( i = 3 ; i < nodeArg.length ; i++ ) {
-        userQuery += (nodeArg[i] + " ");
-    };
+
+
+// function for the spotify part of the liribot
+function spotifyThis(userInput) {
+    if (userInput === "") {
+        userQuery = "The Sign";
+    } else{  
+        var userQuery = userInput;
+    }
 
     spotify.search({ type: 'track', query: userQuery }, function(err, data) {
         if (err) {
@@ -59,19 +136,4 @@ if (process.argv[2] === "spotify-this-song") {
 }
 
 
-
-
-// concert-this
-
-
-
-// spotify-this-song
-
-
-
-// movie-this
-
-
-
-// do-what-it-says
-
+liriSearch();
